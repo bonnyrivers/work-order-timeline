@@ -1,0 +1,30 @@
+<div class="controls">
+  <button (click)="currentScale = 'month'">Month View</button>
+  <button (click)="currentScale = 'year'">Year View</button>
+  <input type="text" [(ngModel)]="dataColWidth" placeholder="Column Width (e.g. 250px)">
+</div>
+
+<div class="table-viewport">
+  <div class="table-grid" 
+       [style.grid-template-columns]="'382px repeat(' + headers.length + ',' + dataColWidth + ')'">
+    
+    <div class="header-cell sticky-left sticky-top">Work Center</div>
+    <div *ngFor="let h of headers" class="header-cell sticky-top">{{ h }}</div>
+
+    <ng-container *ngFor="let row of rows">
+      <div class="cell sticky-left wc-label">{{ row.name }}</div>
+
+      <div *ngFor="let h of headers; let i = index" class="cell timeline-slot">
+        <ng-container *ngFor="let task of row.tasks">
+          <div *ngIf="task.startIdx === i" 
+               class="task-bar" 
+               [ngClass]="task.status"
+               [style.width]="'calc(' + (task.span * 100) + '% + ' + (task.span - 1) + 'px)'">
+            <span class="task-name">{{ task.name }}</span>
+            <span class="status-badge">{{ task.status }}</span>
+          </div>
+        </ng-container>
+      </div>
+    </ng-container>
+  </div>
+</div>

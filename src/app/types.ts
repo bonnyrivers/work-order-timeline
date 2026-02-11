@@ -6,7 +6,7 @@ export interface WorkCenterDocument {
   };
 }
 
-interface WorkOrderDocument {
+export interface WorkOrderDocument {
   docId: string;
   docType: "workOrder";
   data: {
@@ -18,4 +18,4 @@ interface WorkOrderDocument {
   };
 }
 
-type WorkOrderStatus = "open" | "in-progress" | "complete" | "blocked";
+export type WorkOrderStatus = "open" | "in-progress" | "complete" | "blocked";

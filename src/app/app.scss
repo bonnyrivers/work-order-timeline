@@ -1,0 +1,17 @@
+@use './styles/variables.scss';
+
+body {
+  font-family: 'Circular-Std', sans-serif;
+}
+
+h3 {
+    opacity: 1;
+    color: rgba(3,9,41,1);
+    font-family: "Circular-Std";
+    font-size: 24px;
+    font-weight: 500;
+    font-style: medium;
+    letter-spacing: 0px;
+    text-align: left;
+    line-height: 34px;
+}
