@@ -1,30 +1,47 @@
 <div class="controls">
-  <button (click)="currentScale = 'month'">Month View</button>
-  <button (click)="currentScale = 'year'">Year View</button>
-  <input type="text" [(ngModel)]="dataColWidth" placeholder="Column Width (e.g. 250px)">
+  <button (click)="changeScale('day')" [class.active]="currentScale === 'day'">Day</button>
+  <button (click)="changeScale('month')" [class.active]="currentScale === 'month'">Month</button>
+  <button (click)="changeScale('year')" [class.active]="currentScale === 'year'">Year</button>
 </div>
-
 <div class="table-viewport">
-  <div class="table-grid" 
-       [style.grid-template-columns]="'382px repeat(' + headers.length + ',' + dataColWidth + ')'">
-    
-    <div class="header-cell sticky-left sticky-top">Work Center</div>
-    <div *ngFor="let h of headers" class="header-cell sticky-top">{{ h }}</div>
+  <div class="flex-row header-row">
+    <div class="header-cell sticky-left">Work Center</div>
+    <div class="scrollable-content">
+      <div *ngFor="let h of headers" class="header-cell" [style.flex]="'0 0 ' + dataColWidth">
+        {{ h }}
+      </div>
+    </div>
+  </div>
 
-    <ng-container *ngFor="let row of rows">
-      <div class="cell sticky-left wc-label">{{ row.name }}</div>
+  <div
+    *ngFor="let row of timelineRows; let idx = index"
+    class="flex-row"
+    (mouseenter)="hoveredIndex = idx"
+    (mouseleave)="hoveredIndex = null"
+    [class.row-hover]="hoveredIndex === idx"
+  >
+    <div class="cell sticky-left">{{ row.name }}</div>
 
-      <div *ngFor="let h of headers; let i = index" class="cell timeline-slot">
+    <div class="scrollable-content">
+      <div
+        *ngFor="let h of headers; let i = index"
+        class="cell timeline-slot"
+        [style.flex]="'0 0 ' + dataColWidth"
+      >
         <ng-container *ngFor="let task of row.tasks">
-          <div *ngIf="task.startIdx === i" 
-               class="task-bar" 
-               [ngClass]="task.status"
-               [style.width]="'calc(' + (task.span * 100) + '% + ' + (task.span - 1) + 'px)'">
-            <span class="task-name">{{ task.name }}</span>
-            <span class="status-badge">{{ task.status }}</span>
+          <div
+            *ngIf="task.position.startIdx === i"
+            class="task-bar"
+            [ngClass]="task.data.status"
+            [style.width]="
+              'calc(' + task.position.span * 100 + '% + ' + (task.position.span - 1) + 'px)'
+            "
+          >
+            <span class="task-label">{{ task.data.name }}</span>
+            <span class="status-badge">{{ task.data.status }}</span>
           </div>
         </ng-container>
       </div>
-    </ng-container>
+    </div>
   </div>
 </div>

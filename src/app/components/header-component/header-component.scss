@@ -1,18 +1,18 @@
 @use '../../app.scss';
 
 .logo-container {
-    padding: 20px 0;;
+  padding: 20px 0;
 
-    img {
-        width: 80px;
-        height: 10px; 
-    }
+  img {
+    width: 80px;
+    height: 10px;
+  }
 }
 
 .table-header {
-    padding-top: 15px;
-    width: 577px;
-    height: 34px;
-    background-color: rgba(255, 255, 255, 1);
-    margin-bottom: 26px;
-}  
+  padding-top: 15px;
+  width: 577px;
+  height: 34px;
+  background-color: rgba(255, 255, 255, 1);
+  margin-bottom: 26px;
+}

@@ -1,81 +1,101 @@
+@use '../../styles/variables.scss';
+@use '../../app.scss';
+
 .table-viewport {
   width: 100%;
-  max-height: 600px;
-  overflow: auto;
-  border: 1px solid #e2e8f0;
+  overflow-x: auto;
+  overflow-y: visible;
   font-family: 'Circular-Std';
+  color: variables.$text-01;
+  border: 1px solid #e2e8f0;
+  background: #ffffff;
 }
 
-.table-grid {
-  display: grid;
-  background-color: #f8fafc;
+.header-cell {
+  background: #f1f5f9;
+  height: 33px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(104, 113, 150, 1);
+  font-family: 'Circular-Std';
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.cell {
+  height: 60px;
+  border-bottom: 1px solid #f1f5f9;
+  display: flex;
+  align-items: center;
+  background: white;
+  cursor: pointer;
+
+  &.sticky-left {
+    font-size: 14px;
+    justify-content: flex-start;
+    width: 382px;
+    padding-left: 31px;
+    z-index: 30; /* Top-left corner must be highest */
+  }
+
+  .sticky-left.row-hover {
+    background-color: #f1f5f9; /* Light blue/grey highlight */
+  }
+}
+
+/* The highlight color for the row */
+.timeline-cells:hover {
+  cursor: pointer;
+  background-color: blue;
+}
+
+.flex-row {
+  display: flex;
+  width: max-content; // Critical for flexbox horizontal layout
+  min-width: 100%;
+  border-bottom: 1px solid #f1f5f9;
+
+  &.row-hover {
+    background-color: #f8fafc;
+    .sticky-left {
+      background-color: #f8fafc;
+    }
+  }
 }
 
 .sticky-left {
   position: sticky;
   left: 0;
   width: 382px;
+  flex: 0 0 382px; // Fixed width 382px
   z-index: 10;
-  background: white;
+  background-color: white;
   border-right: 2px solid #e2e8f0;
+  display: flex;
+  align-items: center;
+  font-weight: 500;
 }
 
-.sticky-top {
-  position: sticky;
-  top: 0;
-  z-index: 20;
-  background: #f1f5f9;
-}
-
-.header-cell.sticky-left.sticky-top {
-  z-index: 30; /* Top-left corner must be highest */
+.scrollable-content {
+  display: flex;
 }
 
 .cell {
-  height: 70px;
-  border-bottom: 1px solid #f1f5f9;
-  border-right: 1px solid #f1f5f9;
+  height: 64px;
   display: flex;
   align-items: center;
-  padding: 0 15px;
-  background: white;
+  padding: 0 10px;
+  border-right: 1px solid #f1f5f9;
+  box-sizing: border-box;
 }
 
 .timeline-slot {
-  position: relative;
-  overflow: visible;
+  position: relative; // Allows absolute task-bar positioning
 }
 
-/* Task Bar & Status Colors */
-.task-bar {
-  position: absolute;
-  height: 38px;
-  top: 16px;
-  left: 5px;
-  border-radius: 6px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 12px;
-  font-size: 12px;
-  z-index: 5;
-}
-
-.complete {
-  background-color: #dcfce7;
-  color: #166534;
-}
-.in-progress {
-  background-color: #e0e7ff;
-  color: #3730a3;
-}
-.blocked {
-  background-color: #fef3c7;
-  color: #92400e;
-}
-.open {
-  background-color: #f1f5f9;
-  color: #475569;
+.cell.timeline-slot:hover {
+  border: 1px solid black;
 }
 
 .status-badge {
@@ -84,4 +104,57 @@
   border-radius: 4px;
   text-transform: uppercase;
   font-size: 10px;
+}
+
+.task-bar {
+  position: absolute;
+  top: 12px;
+  left: 5px;
+  height: 40px;
+  z-index: 5;
+  border-radius: 6px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 12px;
+  font-size: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  max-width: 100vw;
+
+  &.complete {
+    background: #dcfce7;
+    color: #166534;
+  }
+  &.in-progress {
+    background: #e0e7ff;
+    color: #3730a3;
+  }
+  &.blocked {
+    background: #fee2e2;
+    color: #991b1b;
+  }
+  &.open {
+    background: #f1f5f9;
+    color: #475569;
+  }
+}
+
+.header-row {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background-color: #f1f5f9;
+  height: 33px;
+
+  .sticky-left {
+    flex: 0 0 362px;
+    width: 362px;
+    z-index: 30;
+    background-color: #f1f5f9;
+    justify-content: flex-start;
+    padding-left: 20px;
+  }
+
+  font-weight: 600;
+  color: #64748b;
 }

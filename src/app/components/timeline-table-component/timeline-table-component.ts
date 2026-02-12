@@ -1,8 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { CENTER_DATA, ORDER_DATA } from '../../data';
-import { WorkCenterDocument, WorkOrderDocument } from '../../types';
+import { CENTERS, ORDERS } from '../../data';
+import { MenuService } from '../../services/menu-service';
 
 @Component({
   selector: 'app-timeline-table-component',
@@ -11,49 +11,89 @@ import { WorkCenterDocument, WorkOrderDocument } from '../../types';
   styleUrl: './timeline-table-component.scss',
 })
 export class TimelineTableComponent {
-  dataColWidth = '250px';
-  currentScale: 'month' | 'year' = 'month';
-  centers = CENTER_DATA;
+  CENTERS = CENTERS;
+  ORDERS = ORDERS;
+  selectedRow?: number;
 
-  // Define the viewport range for the timeline
+  DAY_COL_WIDTH = '60px';
+  MONTH_COL_WIDTH = '114px';
+  YEAR_COL_WIDTH = '200px';
+
+  currentScale: 'day' | 'month' | 'year' = 'month';
+  dataColWidth = '114px';
+  hoveredIndex: number | null = null;
+  referenceDate = new Date('2026-01-01');
+
   viewRange = {
-    months: ['2025-01', '2025-02', '2025-03', '2025-04', '2025-05', '2025-06'],
-    years: ['2024', '2025', '2026'],
+    days: [
+      ...Array.from({ length: 31 }, (_, i) => `${i + 1} Jan`),
+      ...Array.from({ length: 28 }, (_, i) => `${i + 1} Feb`),
+    ],
+    months: [
+      'Jan 2026',
+      'Feb 2026',
+      'Mar 2026',
+      'Apr 2026',
+      'May 2026',
+      'Jun 2026',
+      'Jul 2026',
+      'Aug 2026',
+      'Sep 2026',
+      'Oct 2026',
+    ],
+    years: ['2024', '2025', '2026', '2027'],
   };
 
   get headers() {
+    if (this.currentScale === 'day') return this.viewRange.days;
     return this.currentScale === 'month' ? this.viewRange.months : this.viewRange.years;
   }
 
-  get rows() {
-    const centers = CENTER_DATA;
-    const orders = ORDER_DATA;
-
-    return centers.map((wc) => ({
+  get timelineRows() {
+    return this.CENTERS.map((wc) => ({
       name: wc.data.name,
-      tasks: orders
-        .filter((wo) => wo.data.workCenterId === wc.docId)
-        .map((wo) => this.mapOrderToTask(wo)),
+      id: wc.docId,
+      tasks: this.ORDERS.filter((wo) => wo.data.workCenterId === wc.docId).map((wo) => ({
+        ...wo,
+        position: this.calculateTaskPosition(wo.data.startDate, wo.data.endDate),
+      })),
     }));
   }
 
-  private mapOrderToTask(wo: WorkOrderDocument) {
-    const start = new Date(wo.data.startDate);
-    const end = new Date(wo.data.endDate);
+  private calculateTaskPosition(startStr: string, endStr: string) {
+    const start = new Date(startStr);
+    const end = new Date(endStr);
+    let startIdx = 0;
+    let span = 1;
 
-    // Logic to find which grid column the order starts in
-    // For simplicity, this assumes the order starts in 2025
-    const startIdx = this.currentScale === 'month' ? start.getMonth() : start.getFullYear() - 2024;
+    if (this.currentScale === 'day') {
+      startIdx = Math.floor((start.getTime() - this.referenceDate.getTime()) / 86400000);
+      span = Math.ceil((end.getTime() - start.getTime()) / 86400000);
+    } else if (this.currentScale === 'month') {
+      startIdx =
+        (start.getFullYear() - this.referenceDate.getFullYear()) * 12 +
+        (start.getMonth() - this.referenceDate.getMonth());
+      span =
+        (end.getFullYear() - start.getFullYear()) * 12 + (end.getMonth() - start.getMonth()) + 1;
+    } else {
+      startIdx = start.getFullYear() - this.referenceDate.getFullYear();
+      span = end.getFullYear() - start.getFullYear() + 1;
+    }
+    return { startIdx, span: Math.max(1, span) };
+  }
 
-    // Calculate how many columns it spans
-    const dayDiff = (end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24);
-    const span = this.currentScale === 'month' ? Math.max(1, Math.ceil(dayDiff / 30)) : 1;
+  changeScale(scale: 'day' | 'month' | 'year') {
+    this.currentScale = scale;
+    this.dataColWidth = scale === 'day' ? '60px' : '114px';
+  }
 
-    return {
-      name: wo.data.name,
-      status: wo.data.status,
-      startIdx,
-      span,
-    };
+  constructor(private menuService: MenuService) {}
+
+  openMenu() {
+    this.menuService.openMenu();
+  }
+
+  setHover(idx: number | null) {
+    this.hoveredIndex = idx;
   }
 }

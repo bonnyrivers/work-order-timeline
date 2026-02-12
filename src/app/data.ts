@@ -1,7 +1,7 @@
 import { WorkCenterDocument, WorkOrderDocument } from './types';
 
-export const CENTER_DATA: (WorkCenterDocument)[] = [
-  // --- WORK CENTERS (10 ENTRIES) ---
+export const CENTERS: WorkCenterDocument[] = [
+  // --- WORK CENTERS ---
   { docId: 'wc-1', docType: 'workCenter', data: { name: 'Genesis Hardware' } },
   { docId: 'wc-2', docType: 'workCenter', data: { name: 'Rodriques Electrics' } },
   { docId: 'wc-3', docType: 'workCenter', data: { name: 'Konsulting Inc' } },
@@ -13,22 +13,132 @@ export const CENTER_DATA: (WorkCenterDocument)[] = [
   { docId: 'wc-9', docType: 'workCenter', data: { name: 'Nova Assembly' } },
   { docId: 'wc-10', docType: 'workCenter', data: { name: 'Quantum Lab' } },
 ];
+// --- WORK ORDERS (Sample Selection) ---
 
-export const ORDER_DATA: WorkOrderDocument[] = [
-  // --- WORK ORDERS (90 ENTRIES - Sample Selection) ---
-  { docId: 'wo-1', docType: 'workOrder', data: { name: 'Order #1001', workCenterId: 'wc-1', status: 'complete', startDate: '2025-01-05', endDate: '2025-02-10' } },
-  { docId: 'wo-2', docType: 'workOrder', data: { name: 'Order #1002', workCenterId: 'wc-1', status: 'in-progress', startDate: '2025-02-15', endDate: '2025-03-20' } },
-  { docId: 'wo-3', docType: 'workOrder', data: { name: 'Order #1003', workCenterId: 'wc-2', status: 'blocked', startDate: '2025-01-20', endDate: '2025-02-05' } },
-  { docId: 'wo-4', docType: 'workOrder', data: { name: 'Order #1004', workCenterId: 'wc-3', status: 'open', startDate: '2025-03-01', endDate: '2025-04-15' } },
-  { docId: 'wo-5', docType: 'workOrder', data: { name: 'Order #1005', workCenterId: 'wc-4', status: 'complete', startDate: '2025-01-10', endDate: '2025-01-25' } },
-  { docId: 'wo-6', docType: 'workOrder', data: { name: 'Order #1006', workCenterId: 'wc-5', status: 'in-progress', startDate: '2025-04-10', endDate: '2025-06-01' } },
-  { docId: 'wo-7', docType: 'workOrder', data: { name: 'Order #1007', workCenterId: 'wc-6', status: 'open', startDate: '2025-02-28', endDate: '2025-03-15' } },
-  { docId: 'wo-8', docType: 'workOrder', data: { name: 'Order #1008', workCenterId: 'wc-7', status: 'blocked', startDate: '2025-05-20', endDate: '2025-07-10' } },
-  { docId: 'wo-9', docType: 'workOrder', data: { name: 'Order #1009', workCenterId: 'wc-8', status: 'complete', startDate: '2025-01-02', endDate: '2025-01-20' } },
-  { docId: 'wo-10', docType: 'workOrder', data: { name: 'Order #1010', workCenterId: 'wc-9', status: 'in-progress', startDate: '2025-08-15', endDate: '2025-10-30' } },
-  { docId: 'wo-11', docType: 'workOrder', data: { name: 'Order #1011', workCenterId: 'wc-10', status: 'open', startDate: '2025-11-01', endDate: '2026-01-15' } },
-  { docId: 'wo-12', docType: 'workOrder', data: { name: 'Order #1012', workCenterId: 'wc-1', status: 'complete', startDate: '2025-06-01', endDate: '2025-06-15' } },
-  { docId: 'wo-13', docType: 'workOrder', data: { name: 'Order #1013', workCenterId: 'wc-2', status: 'in-progress', startDate: '2025-07-20', endDate: '2025-09-05' } },
-  { docId: 'wo-14', docType: 'workOrder', data: { name: 'Order #1014', workCenterId: 'wc-3', status: 'blocked', startDate: '2025-02-10', endDate: '2025-03-01' } },
-  { docId: 'wo-15', docType: 'workOrder', data: { name: 'Order #1015', workCenterId: 'wc-4', status: 'open', startDate: '2025-12-01', endDate: '2026-02-20' } },
+export const ORDERS: WorkOrderDocument[] = [
+  // Work Center 1: Multiple tasks to test sequence
+  {
+    docId: 'wo-1',
+    docType: 'workOrder',
+    data: {
+      name: 'Order #2001',
+      workCenterId: 'wc-1',
+      status: 'complete',
+      startDate: '2025-12-15',
+      endDate: '2026-01-10',
+    },
+  },
+  {
+    docId: 'wo-2',
+    docType: 'workOrder',
+    data: {
+      name: 'Order #2002',
+      workCenterId: 'wc-1',
+      status: 'in-progress',
+      startDate: '2026-01-15',
+      endDate: '2026-02-20',
+    },
+  },
+
+  // Work Center 2: Blocked task
+  {
+    docId: 'wo-3',
+    docType: 'workOrder',
+    data: {
+      name: 'Order #2003',
+      workCenterId: 'wc-2',
+      status: 'blocked',
+      startDate: '2026-01-20',
+      endDate: '2026-02-05',
+    },
+  },
+
+  // Work Center 3: Long duration (spanning multiple months/years)
+  {
+    docId: 'wo-4',
+    docType: 'workOrder',
+    data: {
+      name: 'Large Project A',
+      workCenterId: 'wc-3',
+      status: 'in-progress',
+      startDate: '2026-01-01',
+      endDate: '2026-06-30',
+    },
+  },
+
+  // Work Center 4: Future tasks
+  {
+    docId: 'wo-5',
+    docType: 'workOrder',
+    data: {
+      name: 'Q2 Inventory',
+      workCenterId: 'wc-4',
+      status: 'open',
+      startDate: '2026-04-01',
+      endDate: '2026-04-15',
+    },
+  },
+
+  // Work Center 5: Short task
+  {
+    docId: 'wo-6',
+    docType: 'workOrder',
+    data: {
+      name: 'Rapid Check',
+      workCenterId: 'wc-5',
+      status: 'complete',
+      startDate: '2026-02-01',
+      endDate: '2026-02-03',
+    },
+  },
+
+  // Work Center 6: Overlapping same start date
+  {
+    docId: 'wo-7',
+    docType: 'workOrder',
+    data: {
+      name: 'Logistics Alpha',
+      workCenterId: 'wc-6',
+      status: 'open',
+      startDate: '2026-03-10',
+      endDate: '2026-03-25',
+    },
+  },
+  {
+    docId: 'wo-8',
+    docType: 'workOrder',
+    data: {
+      name: 'Logistics Beta',
+      workCenterId: 'wc-6',
+      status: 'in-progress',
+      startDate: '2026-03-10',
+      endDate: '2026-04-05',
+    },
+  },
+
+  // Work Center 7: Energy Audit
+  {
+    docId: 'wo-9',
+    docType: 'workOrder',
+    data: {
+      name: 'Grid Analysis',
+      workCenterId: 'wc-7',
+      status: 'blocked',
+      startDate: '2026-01-10',
+      endDate: '2026-01-25',
+    },
+  },
+
+  // Work Center 10: Year-end Wrap up
+  {
+    docId: 'wo-10',
+    docType: 'workOrder',
+    data: {
+      name: 'Lab Clean up',
+      workCenterId: 'wc-10',
+      status: 'complete',
+      startDate: '2025-12-28',
+      endDate: '2026-01-05',
+    },
+  },
 ];
