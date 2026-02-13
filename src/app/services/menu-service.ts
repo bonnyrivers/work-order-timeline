@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Subject } from 'rxjs';
 import { ORDERS } from '../data';
 import { WorkOrderDocument } from '../types';
 
@@ -8,32 +8,37 @@ export interface MenuState {
   data?: WorkOrderDocument;
 }
 
+// Handles data and updating of data coming from the Popout menu component
+// Adds new work orders to the data set
 @Injectable({ providedIn: 'root' })
 export class MenuService {
-  private menuState = new BehaviorSubject<MenuState>({ isOpen: false });
+  private menuState = new BehaviorSubject<MenuState>({
+    isOpen: false,
+    data: undefined,
+  });
   state$ = this.menuState.asObservable();
 
-  // Update existing order if it exists
-  // Create new order if it does not
-  submit(data?: WorkOrderDocument, workOrderId?: string) {
-    if (data) {
-      let orderIndex = ORDERS.findIndex((o) => o.docId === workOrderId);
-      if (orderIndex && this.menuState.value.data) {
-        ORDERS[orderIndex] = this.menuState.value.data;
+  submit(updatedData: WorkOrderDocument) {
+    if (updatedData.docId) {
+      const index = ORDERS.findIndex((o) => o.docId === updatedData.docId);
+      if (index !== -1) {
+        // updating previous index
+        ORDERS[index] = updatedData;
       }
-      this.close();
     } else {
-      if (this.menuState.value.data) {
-        ORDERS.push({ ...this.menuState.value.data, docId: 'example' });
-      }
+      // pushing new order
+      ORDERS.push({ ...updatedData });
+    }
+    this.close();
+  }
+
+  open(data?: WorkOrderDocument) {
+    if (data) {
+      this.menuState.next({ data, isOpen: true });
     }
   }
 
-  open(data: Partial<MenuState>) {
-    this.menuState.next({ isOpen: true, ...data });
-  }
-
   close() {
-    this.menuState.next({ isOpen: false });
+    this.menuState.next({ isOpen: false, data: undefined });
   }
 }

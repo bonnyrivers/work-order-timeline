@@ -5,7 +5,7 @@
 </div>
 <div class="table-viewport">
   <div class="flex-row header-row">
-    <div class="header-cell sticky-left">Work Center</div>
+    <div class="header-cell sticky-left">Woropok Center</div>
     <div class="scrollable-content">
       <div *ngFor="let h of headers" class="header-cell" [style.flex]="'0 0 ' + dataColWidth">
         {{ h }}
@@ -20,7 +20,9 @@
     (mouseleave)="hoveredIndex = null"
     [class.row-hover]="hoveredIndex === idx"
   >
-    <div class="cell sticky-left">{{ row.name }}</div>
+    <div class="cell sticky-left">
+      {{ row.name }}
+    </div>
 
     <div class="scrollable-content">
       <div
@@ -38,7 +40,7 @@
           <div
             *ngIf="task.position.startIdx === i"
             class="task-bar"
-            (click)="openMenu(i, row, task)"
+            (click)="openMenu(task.position.startIdx, row, task)"
             [ngClass]="task.data.status"
             [style.width]="
               'calc(' + task.position.span * 100 + '% + ' + (task.position.span - 1) + 'px)'

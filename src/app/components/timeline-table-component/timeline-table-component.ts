@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CENTERS, ORDERS } from '../../data';
-import { MenuService, MenuState } from '../../services/menu-service';
+import { MenuService } from '../../services/menu-service';
 import { WorkOrderDocument } from '../../types';
 
 interface WorkCenterTask extends WorkOrderDocument {
@@ -68,7 +68,9 @@ export class TimelineTableComponent {
   get timelineRows(): TimelineRow[] {
     let rows = this.CENTERS.map((wc) => {
       let filledPositions = new Map();
-      let tasks = this.ORDERS.filter((wo) => wo.data.workCenterId === wc.docId).map((wo) => {
+      let tasks = this.ORDERS.filter(
+        (wo) => wo?.data?.workCenterId && wo.data.workCenterId === wc.docId,
+      ).map((wo) => {
         let position = this.calculateTaskPosition(wo.data.startDate, wo.data.endDate);
         for (let i = position.startIdx; i <= position.startIdx + position.span; i++) {
           filledPositions.set(i, true);
@@ -140,13 +142,24 @@ export class TimelineTableComponent {
     return date.toISOString().split('T')[0];
   }
 
-  // If a row is given, but no task, we're creating a new one.
-  // If a row and task is given, we're editing one
   openMenu(colIndex: number, row: TimelineRow, task?: WorkCenterTask) {
-    // Logic to convert colIndex back to a date string based on referenceDate
-    // const clickedDate = this.getDateFromColumn(colIndex);
-    let state = { data: task ?? undefined };
-    this.menuService.open(state);
+    const clickedDate = this.getDateFromColumn(colIndex);
+
+    if (task) {
+      // EDIT MODE: Pass existing task data
+      this.menuService.open(task);
+    } else {
+      // CREATE MODE: Pass a skeleton object with the clicked date and work center
+      const newOrder: any = {
+        data: {
+          orderName: '',
+          status: 'open',
+          startDate: clickedDate, // Pre-fill the date they clicked on
+          workCenterId: row.id, // Pre-fill the row they clicked in
+        },
+      };
+      this.menuService.open(newOrder);
+    }
   }
 
   setHover(idx: number | null) {

@@ -1,28 +1,15 @@
-.overlay-backdrop {
-  position: fixed;
-  // Covers the timeline so the user focuses on the form
-  z-index: 1050;
-  backdrop-filter: blur(2px);
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: rgba(0, 0, 0, 0.1); // Light dimming as seen in screenshot
-}
-
 .details-menu {
   position: fixed;
   top: 0;
-  right: 0;
-  width: 450px;
+  width: 400px;
   height: 100vh;
-  z-index: 1100; // Higher than header sticky columns
-  transform: translateX(100%);
-  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  background: white;
+  box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
+  transition: right 0.3s ease-in-out;
+  z-index: 1000;
+  font-family: 'Circular-Std';
 
-  &.open {
-    transform: translateX(0);
-  }
+  right: 0; /* Slide in when state.isOpen is true */
 }
 
 .menu-header {
