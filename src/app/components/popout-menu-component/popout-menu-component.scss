@@ -1,6 +1,7 @@
 .details-menu {
   position: fixed;
   top: 0;
+  right: -400px; /* Hidden by default */
   width: 400px;
   height: 100vh;
   background: white;
@@ -9,7 +10,9 @@
   z-index: 1000;
   font-family: 'Circular-Std';
 
-  right: 0; /* Slide in when state.isOpen is true */
+  &.open {
+    right: 0; /* Slide in when state.isOpen is true */
+  }
 }
 
 .menu-header {

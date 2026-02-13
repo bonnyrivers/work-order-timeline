@@ -1,12 +1,26 @@
-<div class="details-menu" [class.open]="state?.isOpen">
+<div
+  class="details-menu"
+  [class.open]="state?.isOpen"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="menu-title"
+  aria-describedby="menu-description"
+>
   <div class="menu-header">
     <div class="header-text">
-      <h2>Work Order Details</h2>
-      <p>Specify the dates, name and status for this order</p>
+      <h2 id="menu-title">Work Order Details</h2>
+      <p id="menu-description">Specify the dates, name and status for this order</p>
     </div>
     <div class="header-actions">
-      <button class="btn-cancel" (click)="onCancel()">Cancel</button>
-      <button class="btn-create" (click)="onCreate()" [disabled]="workOrderForm.invalid">
+      <button class="btn-cancel" (click)="onCancel()" aria-label="Cancel and close menu">
+        Cancel
+      </button>
+      <button
+        class="btn-create"
+        (click)="onCreate()"
+        [disabled]="workOrderForm.invalid"
+        aria-label="Create work order"
+      >
         Create
       </button>
     </div>
@@ -14,27 +28,37 @@
 
   <form [formGroup]="workOrderForm" class="menu-body">
     <div class="form-group">
-      <label>Work Order Name</label>
-      <input type="text" formControlName="orderName" placeholder="Acme Inc." />
+      <label for="orderName">Work Order Name</label>
+      <input
+        id="orderName"
+        type="text"
+        formControlName="orderName"
+        placeholder="Acme Inc."
+        aria-required="true"
+      />
     </div>
 
     <div class="form-group">
-      <label>Status</label>
+      <label for="orderStatus">Status</label>
       <div class="custom-select">
-        <select formControlName="status">
+        <select id="orderStatus" formControlName="status">
           <option *ngFor="let status of statusOptions" [value]="status">
             {{ status | titlecase }}
           </option>
         </select>
-        <span class="status-badge-preview" [ngClass]="workOrderForm.get('status')?.value">
-          {{ workOrderForm.get('status')?.value | titlecase }}
+        <span
+          class="status-badge-preview"
+          [ngClass]="workOrderForm.get('status')?.value"
+          aria-live="polite"
+        >
+          Current status: {{ workOrderForm.get('status')?.value | titlecase }}
         </span>
       </div>
     </div>
 
     <div class="form-group">
-      <label>Date</label>
-      <input type="date" formControlName="startDate" />
+      <label for="startDate">Date</label>
+      <input id="startDate" type="date" formControlName="startDate" />
     </div>
   </form>
 </div>

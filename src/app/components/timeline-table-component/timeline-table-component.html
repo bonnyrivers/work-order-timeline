@@ -1,13 +1,47 @@
-<div class="controls">
-  <button (click)="changeScale('day')" [class.active]="currentScale === 'day'">Day</button>
-  <button (click)="changeScale('month')" [class.active]="currentScale === 'month'">Month</button>
-  <button (click)="changeScale('year')" [class.active]="currentScale === 'year'">Year</button>
+<div class="controls" role="group" aria-label="Change timeline scale">
+  <button
+    id="scale-day"
+    type="button"
+    (click)="changeScale('day')"
+    [class.active]="currentScale === 'day'"
+    [aria-pressed]="currentScale === 'day'"
+    aria-controls="timeline-grid"
+  >
+    Day
+  </button>
+  <button
+    id="scale-month"
+    type="button"
+    (click)="changeScale('month')"
+    [class.active]="currentScale === 'month'"
+    [aria-pressed]="currentScale === 'month'"
+    aria-controls="timeline-grid"
+  >
+    Month
+  </button>
+  <button
+    id="scale-year"
+    type="button"
+    (click)="changeScale('year')"
+    [class.active]="currentScale === 'year'"
+    [aria-pressed]="currentScale === 'year'"
+    aria-controls="timeline-grid"
+  >
+    Year
+  </button>
 </div>
-<div class="table-viewport">
-  <div class="flex-row header-row">
-    <div class="header-cell sticky-left">Woropok Center</div>
+
+<div class="table-viewport" id="timeline-grid" role="grid" aria-label="Work Order Schedule">
+  <div class="flex-row header-row" role="row">
+    <div class="header-cell sticky-left" role="columnheader">Work Center</div>
     <div class="scrollable-content">
-      <div *ngFor="let h of headers" class="header-cell" [style.flex]="'0 0 ' + dataColWidth">
+      <div
+        *ngFor="let h of headers; let i = index"
+        class="header-cell"
+        role="columnheader"
+        [id]="'col-' + i"
+        [style.flex]="'0 0 ' + dataColWidth"
+      >
         {{ h }}
       </div>
     </div>
@@ -16,38 +50,48 @@
   <div
     *ngFor="let row of timelineRows; let idx = index"
     class="flex-row"
+    role="row"
+    [id]="'row-' + row.id"
     (mouseenter)="hoveredIndex = idx"
     (mouseleave)="hoveredIndex = null"
     [class.row-hover]="hoveredIndex === idx"
   >
-    <div class="cell sticky-left">
+    <div class="cell sticky-left" role="rowheader">
       {{ row.name }}
     </div>
 
-    <div class="scrollable-content">
+    <div class="scrollable-content" role="presentation">
       <div
         *ngFor="let h of headers; let i = index"
         class="cell timeline-slot hover-overlay"
+        role="gridcell"
         [style.flex]="'0 0 ' + dataColWidth"
         [class.row-hover]="hoveredIndex === idx"
       >
-        <div
+        <button
           *ngIf="!row.filledPositions.get(i)"
+          type="button"
           class="empty-slot"
           (click)="openMenu(i, row)"
-        ></div>
+          [attr.aria-label]="'Create work order for ' + row.name + ' on ' + h"
+        ></button>
+
         <ng-container *ngFor="let task of row.tasks">
           <div
             *ngIf="task.position.startIdx === i"
             class="task-bar"
+            role="button"
+            tabindex="0"
             (click)="openMenu(task.position.startIdx, row, task)"
+            (keydown.enter)="openMenu(task.position.startIdx, row, task)"
             [ngClass]="task.data.status"
+            [attr.aria-label]="'Edit task: ' + task.data.name + ', Status: ' + task.data.status"
             [style.width]="
               'calc(' + task.position.span * 100 + '% + ' + (task.position.span - 1) + 'px)'
             "
           >
-            <span class="task-label">{{ task.data.name }}</span>
-            <span class="status-badge">{{ task.data.status }}</span>
+            <span class="task-label" aria-hidden="true">{{ task.data.name }}</span>
+            <span class="status-badge" aria-hidden="true">{{ task.data.status }}</span>
           </div>
         </ng-container>
       </div>
