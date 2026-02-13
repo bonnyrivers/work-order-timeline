@@ -25,13 +25,20 @@
     <div class="scrollable-content">
       <div
         *ngFor="let h of headers; let i = index"
-        class="cell timeline-slot"
+        class="cell timeline-slot hover-overlay"
         [style.flex]="'0 0 ' + dataColWidth"
+        [class.row-hover]="hoveredIndex === idx"
       >
+        <div
+          *ngIf="!row.filledPositions.get(i)"
+          class="empty-slot"
+          (click)="openMenu(i, row)"
+        ></div>
         <ng-container *ngFor="let task of row.tasks">
           <div
             *ngIf="task.position.startIdx === i"
             class="task-bar"
+            (click)="openMenu(i, row, task)"
             [ngClass]="task.data.status"
             [style.width]="
               'calc(' + task.position.span * 100 + '% + ' + (task.position.span - 1) + 'px)'

@@ -2,7 +2,22 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CENTERS, ORDERS } from '../../data';
-import { MenuService } from '../../services/menu-service';
+import { MenuService, MenuState } from '../../services/menu-service';
+import { WorkOrderDocument } from '../../types';
+
+interface WorkCenterTask extends WorkOrderDocument {
+  position: {
+    startIdx: number;
+    span: number;
+  };
+}
+
+interface TimelineRow {
+  name: string;
+  id: string;
+  tasks: WorkCenterTask[];
+  filledPositions: Map<number, boolean>;
+}
 
 @Component({
   selector: 'app-timeline-table-component',
@@ -41,7 +56,7 @@ export class TimelineTableComponent {
       'Sep 2026',
       'Oct 2026',
     ],
-    years: ['2024', '2025', '2026', '2027'],
+    years: ['2024', '2025', '2026', '2027', '2028'],
   };
 
   get headers() {
@@ -49,16 +64,31 @@ export class TimelineTableComponent {
     return this.currentScale === 'month' ? this.viewRange.months : this.viewRange.years;
   }
 
-  get timelineRows() {
-    return this.CENTERS.map((wc) => ({
-      name: wc.data.name,
-      id: wc.docId,
-      tasks: this.ORDERS.filter((wo) => wo.data.workCenterId === wc.docId).map((wo) => ({
-        ...wo,
-        position: this.calculateTaskPosition(wo.data.startDate, wo.data.endDate),
-      })),
-    }));
+  // Gets each row and a map of which cells are empty
+  get timelineRows(): TimelineRow[] {
+    let rows = this.CENTERS.map((wc) => {
+      let filledPositions = new Map();
+      let tasks = this.ORDERS.filter((wo) => wo.data.workCenterId === wc.docId).map((wo) => {
+        let position = this.calculateTaskPosition(wo.data.startDate, wo.data.endDate);
+        for (let i = position.startIdx; i <= position.startIdx + position.span; i++) {
+          filledPositions.set(i, true);
+        }
+        return {
+          ...wo,
+          position: this.calculateTaskPosition(wo.data.startDate, wo.data.endDate),
+        };
+      });
+      return {
+        name: wc.data.name,
+        id: wc.docId,
+        tasks,
+        filledPositions,
+      };
+    });
+    return rows;
   }
+
+  constructor(private menuService: MenuService) {}
 
   private calculateTaskPosition(startStr: string, endStr: string) {
     const start = new Date(startStr);
@@ -87,10 +117,36 @@ export class TimelineTableComponent {
     this.dataColWidth = scale === 'day' ? '60px' : '114px';
   }
 
-  constructor(private menuService: MenuService) {}
+  /**
+   * Calculates the ISO date string based on the column index
+   * and the currently active scale.
+   */
+  getDateFromColumn(colIndex: number): string {
+    // Create a new date instance from the reference to avoid mutation
+    const date = new Date(this.referenceDate);
 
-  openMenu() {
-    this.menuService.openMenu();
+    if (this.currentScale === 'day') {
+      // Add the number of days directly
+      date.setDate(date.getDate() + colIndex);
+    } else if (this.currentScale === 'month') {
+      // Add months; JavaScript handles year rollover automatically
+      date.setMonth(date.getMonth() + colIndex);
+    } else if (this.currentScale === 'year') {
+      // Add years
+      date.setFullYear(date.getFullYear() + colIndex);
+    }
+
+    // Return formatted as YYYY-MM-DD for the date input in the side panel
+    return date.toISOString().split('T')[0];
+  }
+
+  // If a row is given, but no task, we're creating a new one.
+  // If a row and task is given, we're editing one
+  openMenu(colIndex: number, row: TimelineRow, task?: WorkCenterTask) {
+    // Logic to convert colIndex back to a date string based on referenceDate
+    // const clickedDate = this.getDateFromColumn(colIndex);
+    let state = { data: task ?? undefined };
+    this.menuService.open(state);
   }
 
   setHover(idx: number | null) {

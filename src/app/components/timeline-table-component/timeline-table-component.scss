@@ -38,16 +38,6 @@
     padding-left: 31px;
     z-index: 30; /* Top-left corner must be highest */
   }
-
-  .sticky-left.row-hover {
-    background-color: #f1f5f9; /* Light blue/grey highlight */
-  }
-}
-
-/* The highlight color for the row */
-.timeline-cells:hover {
-  cursor: pointer;
-  background-color: blue;
 }
 
 .flex-row {
@@ -82,11 +72,10 @@
 }
 
 .cell {
-  height: 64px;
+  height: 60px;
   display: flex;
   align-items: center;
   padding: 0 10px;
-  border-right: 1px solid #f1f5f9;
   box-sizing: border-box;
 }
 
@@ -94,8 +83,8 @@
   position: relative; // Allows absolute task-bar positioning
 }
 
-.cell.timeline-slot:hover {
-  border: 1px solid black;
+.cell.timeline-slot.row-hover {
+  background-color: #eef0ff;
 }
 
 .status-badge {
@@ -157,4 +146,13 @@
 
   font-weight: 600;
   color: #64748b;
+}
+
+.cell.timeline-slot.row-hover.empty-slot:hover {
+  height: 38px;
+  z-index: 29;
+  width: 100%;
+  border-radius: 8px;
+  border: 1px solid rgba(195, 199, 255, 1);
+  background-color: rgba(101, 112, 255, 0.1);
 }

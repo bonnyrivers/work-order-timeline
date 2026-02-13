@@ -1,1 +1,40 @@
-<p>popout-menu-component works!</p>
+<div class="overlay-backdrop" *ngIf="!!state.isOpen" (click)="onCancel()"></div>
+
+<div class="details-menu" [class.open]="state.isOpen">
+  <div class="menu-header">
+    <div class="header-text">
+      <h2>Work Order Details</h2>
+      <p>Specify the dates, name and status for this order</p>
+    </div>
+    <div class="header-actions">
+      <button class="btn-cancel" (click)="onCancel()">Cancel</button>
+      <button class="btn-create" (click)="onCreate()">Create</button>
+    </div>
+  </div>
+
+  <div class="menu-body">
+    <div class="form-group">
+      <label>Work Order Name</label>
+      <input type="text" [(ngModel)]="state.orderName" placeholder="Acme Inc." />
+    </div>
+
+    <div class="form-group">
+      <label>Status</label>
+      <div class="custom-select">
+        <select [(ngModel)]="state.status">
+          <option *ngFor="let status of statusOptions" [value]="status">
+            {{ status | titlecase }}
+          </option>
+        </select>
+        <span class="status-badge-preview" [ngClass]="state.status">
+          {{ state.status | titlecase }}
+        </span>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Date</label>
+      <input type="date" [(ngModel)]="state.startDate" />
+    </div>
+  </div>
+</div>
